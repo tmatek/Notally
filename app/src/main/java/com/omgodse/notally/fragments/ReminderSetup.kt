@@ -91,10 +91,21 @@ class ReminderSetupDialog : DialogFragment(), View.OnClickListener, DatePickerDi
     override fun onClick(dialog: DialogInterface?, which: Int) {
         when (which) {
             DialogInterface.BUTTON_POSITIVE -> {
+                // first cancel previous alarm
+                if (model.reminder.value != null) {
+                    AlarmReceiver.cancelAlarm(
+                        this.requireContext(),
+                        AlarmDetails(model.reminder.value!!, model.id)
+                    )
+                }
+
                 model.reminder.value = pickedDate.timeInMillis
+
+                // schedule new alarm
                 AlarmReceiver.scheduleAlarm(
                     this.requireContext(), AlarmDetails(pickedDate.timeInMillis, model.id)
                 )
+
                 dismiss()
             }
 
