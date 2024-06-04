@@ -26,6 +26,11 @@
     <string name="pinned">Pripeto</string>
     <string name="others">Drugi</string>
 
+    <!-- Reminders -->
+    <string name="reminder">Opomnik</string>
+    <string name="manage_reminder">Nastavi opomnik</string>
+    <string name="time">Čas</string>
+
     <!-- Chooser dialog hints -->
     <string name="view_note">Ogled zapiska</string>
 

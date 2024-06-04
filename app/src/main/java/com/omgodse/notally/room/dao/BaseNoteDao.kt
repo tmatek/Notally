@@ -99,6 +99,8 @@ interface BaseNoteDao {
     @Query("UPDATE BaseNote SET audios = :audios WHERE id = :id")
     suspend fun updateAudios(id: Long, audios: List<Audio>)
 
+    @Query("UPDATE BaseNote SET reminder = null WHERE id IN (:ids)")
+    suspend fun removeReminder(ids: LongArray)
 
     /**
      * Both id and position can be invalid.

@@ -1,10 +1,12 @@
 package com.omgodse.notally.recyclerview.viewholder
 
+import android.content.res.ColorStateList
 import android.graphics.drawable.Drawable
 import android.util.TypedValue
 import android.view.View
 import android.widget.TextView
 import androidx.core.content.ContextCompat
+import androidx.core.graphics.ColorUtils
 import androidx.core.view.children
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
@@ -85,6 +87,8 @@ class BaseNoteVH(
         setDate(baseNote.timestamp)
         setColor(baseNote.color)
         setImages(baseNote.images, mediaRoot)
+
+        Operations.bindReminder(binding.ReminderLayout, baseNote.reminder, textSize, baseNote.color, null)
 
         binding.Title.text = baseNote.title
         binding.Title.isVisible = baseNote.title.isNotEmpty()
@@ -200,7 +204,6 @@ class BaseNoteVH(
             Glide.with(binding.ImageView).clear(binding.ImageView)
         }
     }
-
 
     private fun isEmpty(baseNote: BaseNote): Boolean {
         return when (baseNote.type) {

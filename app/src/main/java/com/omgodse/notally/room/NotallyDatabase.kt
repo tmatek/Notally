@@ -34,7 +34,7 @@ abstract class NotallyDatabase : RoomDatabase() {
         fun getDatabase(app: Application): NotallyDatabase {
             return instance ?: synchronized(this) {
                 val instance = Room.databaseBuilder(app, NotallyDatabase::class.java, DatabaseName)
-                    .addMigrations(Migration2, Migration3, Migration4)
+                    .addMigrations(Migration2, Migration3, Migration4, Migration5)
                     .build()
                 this.instance = instance
                 return instance
@@ -59,6 +59,15 @@ abstract class NotallyDatabase : RoomDatabase() {
 
             override fun migrate(db: SupportSQLiteDatabase) {
                 db.execSQL("ALTER TABLE `BaseNote` ADD COLUMN `audios` TEXT NOT NULL DEFAULT `[]`")
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL("ALTER TABLE `BaseNote` ADD COLUMN `reminder` INTEGER DEFAULT NULL")
+            }
+        }
+
+        object Migration5 : Migration(4, 5) {
+
+            override fun migrate(db: SupportSQLiteDatabase) {
+                db.execSQL("ALTER TABLE `BaseNote` ADD COLUMN `reminder` INTEGER DEFAULT NULL")
             }
         }
     }

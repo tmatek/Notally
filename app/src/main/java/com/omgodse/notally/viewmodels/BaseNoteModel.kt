@@ -8,6 +8,7 @@ import android.net.Uri
 import android.print.PostPDFGenerator
 import android.text.Html
 import android.widget.Toast
+import androidx.core.database.getLongOrNull
 import androidx.core.text.toHtml
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
@@ -327,6 +328,7 @@ class BaseNoteModel(private val app: Application) : AndroidViewModel(app) {
         val body = cursor.getString(cursor.getColumnIndexOrThrow("body"))
         val spansTmp = cursor.getString(cursor.getColumnIndexOrThrow("spans"))
         val itemsTmp = cursor.getString(cursor.getColumnIndexOrThrow("items"))
+        val reminder = cursor.getLongOrNull(cursor.getColumnIndexOrThrow("reminder"))
 
         val pinned = when (pinnedTmp) {
             0 -> false
@@ -352,7 +354,7 @@ class BaseNoteModel(private val app: Application) : AndroidViewModel(app) {
             Converters.jsonToAudios(cursor.getString(audiosIndex))
         } else emptyList()
 
-        return BaseNote(0, type, folder, color, title, pinned, timestamp, labels, body, spans, items, images, audios)
+        return BaseNote(0, type, folder, color, title, pinned, timestamp, labels, body, spans, items, images, audios, reminder)
     }
 
     private fun <T> convertCursorToList(cursor: Cursor, convert: (cursor: Cursor) -> T): ArrayList<T> {
@@ -463,6 +465,10 @@ class BaseNoteModel(private val app: Application) : AndroidViewModel(app) {
         val ids = actionMode.selectedIds.toLongArray()
         actionMode.close(false)
         executeAsync { baseNoteDao.move(ids, folder) }
+
+        if (folder == Folder.DELETED) {
+            executeAsync { baseNoteDao.removeReminder(ids) }
+        }
     }
 
     fun updateBaseNoteLabels(labels: List<String>, id: Long) {

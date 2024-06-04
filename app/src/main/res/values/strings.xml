@@ -28,6 +28,11 @@
     <string name="pinned">Pinned</string>
     <string name="others">Others</string>
 
+    <!-- Reminders -->
+    <string name="reminder">Reminder</string>
+    <string name="manage_reminder">Manage reminder</string>
+    <string name="time">Time</string>
+
     <!-- Chooser dialog hints -->
     <string name="view_note">View note</string>
 
@@ -147,7 +152,7 @@
     <string name="unknown_name">Unknown name</string>
     <string name="unknown_error">Unknown error</string>
     <string name="insert_an_sd_card_images">Insert an SD card to add images</string>
-    <string name="please_grant_notally_notification">Please grant Notally the permission to send notifications. This is used to display the progress if operations like deleting images or importing backups take time</string>
+    <string name="please_grant_notally_notification">Please grant Notally the permission to send notifications and schedule alarms. They are needed for reminders and long running operations such as backups.</string>
 
     <plurals name="cant_add_images">
         <item quantity="one">Can’t add %d image</item>

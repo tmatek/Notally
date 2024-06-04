@@ -28,6 +28,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.omgodse.notally.R
 import com.omgodse.notally.databinding.ActivityNotallyBinding
 import com.omgodse.notally.databinding.DialogProgressBinding
+import com.omgodse.notally.fragments.ReminderSetupDialog
 import com.omgodse.notally.image.ImageError
 import com.omgodse.notally.miscellaneous.Constants
 import com.omgodse.notally.miscellaneous.Operations
@@ -45,7 +46,7 @@ import com.omgodse.notally.widget.WidgetProvider
 import kotlinx.coroutines.launch
 import java.text.DateFormat
 
-abstract class NotallyActivity(private val type: Type) : AppCompatActivity() {
+abstract class NotallyActivity(private val type: Type) : AppCompatActivity(), View.OnClickListener {
 
     internal lateinit var binding: ActivityNotallyBinding
     internal val model: NotallyModel by viewModels()
@@ -149,6 +150,12 @@ abstract class NotallyActivity(private val type: Type) : AppCompatActivity() {
         }
     }
 
+    override fun onClick(view: View?) {
+        if (view?.parent == binding.ReminderLayout) {
+            openReminderDialog()
+        }
+    }
+
 
     abstract fun configureUI()
 
@@ -166,6 +173,7 @@ abstract class NotallyActivity(private val type: Type) : AppCompatActivity() {
         Operations.bindLabels(binding.LabelGroup, model.labels, model.textSize)
 
         setColor()
+        setupReminder()
     }
 
 
@@ -267,6 +275,7 @@ abstract class NotallyActivity(private val type: Type) : AppCompatActivity() {
 
     private fun delete() {
         model.folder = Folder.DELETED
+        model.reminder.value = null
         finish()
     }
 
@@ -393,6 +402,16 @@ abstract class NotallyActivity(private val type: Type) : AppCompatActivity() {
         binding.Toolbar.backgroundTintList = ColorStateList.valueOf(color)
     }
 
+    private fun setupReminder() {
+        model.reminder.observe(this) { reminder ->
+            Operations.bindReminder(binding.ReminderLayout, reminder, model.textSize, model.color, this)
+        }
+    }
+
+    private fun openReminderDialog() {
+        ReminderSetupDialog().show(supportFragmentManager, ReminderSetupDialog.TAG)
+    }
+
     private fun setupToolbar() {
         binding.Toolbar.setNavigationOnClickListener { finish() }
 
@@ -402,6 +421,7 @@ abstract class NotallyActivity(private val type: Type) : AppCompatActivity() {
 
         menu.add(R.string.share, R.drawable.share) { share() }
         menu.add(R.string.labels, R.drawable.label) { label() }
+        menu.add(R.string.reminder, R.drawable.reminder) { openReminderDialog() }
         menu.add(R.string.add_images, R.drawable.add_images) { checkNotificationPermission() }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {

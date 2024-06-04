@@ -12,4 +12,17 @@
     <color name="Flower">#880E4F</color>
     <color name="Blossom">#6D394F</color>
     <color name="Clay">#4B443A</color>
+
+    <color name="DefaultShade">#2A2A2A</color>
+    <color name="CoralShade">#8F1C36</color>
+    <color name="OrangeShade">#82341E</color>
+    <color name="SandShade">#925704</color>
+    <color name="StormShade">#32546D</color>
+    <color name="FogShade">#2C768C</color>
+    <color name="SageShade">#0F7871</color>
+    <color name="MintShade">#30624B</color>
+    <color name="DuskShade">#5A3971</color>
+    <color name="FlowerShade">#A2115E</color>
+    <color name="BlossomShade">#7f425c</color>
+    <color name="ClayShade">#60574A</color>
 </resources>
