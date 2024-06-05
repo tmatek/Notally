@@ -116,7 +116,7 @@
                 android:layout_height="wrap_content"
                 android:overScrollMode="never"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
-                
+
             <LinearLayout
                 android:id="@+id/ReminderLayout"
                 android:layout_width="match_parent"

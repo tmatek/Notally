@@ -3,7 +3,6 @@ package com.omgodse.notally.room
 import androidx.room.Entity
 import androidx.room.Index
 import androidx.room.PrimaryKey
-import java.util.Optional
 
 @Entity(indices = [Index(value = ["id", "folder", "pinned", "timestamp", "labels"])])
 data class BaseNote(

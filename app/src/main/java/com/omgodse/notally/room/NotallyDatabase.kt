@@ -59,8 +59,6 @@ abstract class NotallyDatabase : RoomDatabase() {
 
             override fun migrate(db: SupportSQLiteDatabase) {
                 db.execSQL("ALTER TABLE `BaseNote` ADD COLUMN `audios` TEXT NOT NULL DEFAULT `[]`")
-            override fun migrate(db: SupportSQLiteDatabase) {
-                db.execSQL("ALTER TABLE `BaseNote` ADD COLUMN `reminder` INTEGER DEFAULT NULL")
             }
         }
 
