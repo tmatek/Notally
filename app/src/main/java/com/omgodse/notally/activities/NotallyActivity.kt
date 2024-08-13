@@ -141,7 +141,8 @@ abstract class NotallyActivity(private val type: Type) : AppCompatActivity(), Vi
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         when (requestCode) {
-            REQUEST_NOTIFICATION_PERMISSION -> selectImages()
+            REQUEST_IMAGES_NOTIFICATION_PERMISSION -> selectImages()
+            REQUEST_REMINDERS_NOTIFICATION_PERMISSION -> openReminderDialog()
             REQUEST_AUDIO_PERMISSION -> {
                 if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     recordAudio()
@@ -209,7 +210,7 @@ abstract class NotallyActivity(private val type: Type) : AppCompatActivity(), Vi
         } else recordAudio()
     }
 
-    private fun checkNotificationPermission() {
+    private fun checkImagesNotificationPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             val permission = Manifest.permission.POST_NOTIFICATIONS
             if (checkSelfPermission(permission) != PackageManager.PERMISSION_GRANTED) {
@@ -218,15 +219,31 @@ abstract class NotallyActivity(private val type: Type) : AppCompatActivity(), Vi
                         .setMessage(R.string.please_grant_notally_notification)
                         .setNegativeButton(R.string.cancel) { _, _ -> selectImages() }
                         .setPositiveButton(R.string.continue_) { _, _ ->
-                            requestPermissions(arrayOf(permission), REQUEST_NOTIFICATION_PERMISSION)
+                            requestPermissions(arrayOf(permission), REQUEST_IMAGES_NOTIFICATION_PERMISSION)
                         }
                         .setOnDismissListener { selectImages() }
                         .show()
-                } else requestPermissions(arrayOf(permission), REQUEST_NOTIFICATION_PERMISSION)
+                } else requestPermissions(arrayOf(permission), REQUEST_IMAGES_NOTIFICATION_PERMISSION)
             } else selectImages()
         } else selectImages()
     }
 
+    private fun checkRemindersNotificationPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            val permission = Manifest.permission.POST_NOTIFICATIONS
+            if (checkSelfPermission(permission) != PackageManager.PERMISSION_GRANTED) {
+                if (shouldShowRequestPermissionRationale(permission)) {
+                    MaterialAlertDialogBuilder(this)
+                        .setMessage(R.string.please_grant_notally_notification)
+                        .setNegativeButton(R.string.cancel) { _, _ -> }
+                        .setPositiveButton(R.string.continue_) { _, _ ->
+                            requestPermissions(arrayOf(permission), REQUEST_REMINDERS_NOTIFICATION_PERMISSION)
+                        }
+                        .show()
+                } else requestPermissions(arrayOf(permission), REQUEST_REMINDERS_NOTIFICATION_PERMISSION)
+            } else openReminderDialog()
+        } else openReminderDialog()
+    }
 
     private fun recordAudio() {
         if (model.audioRoot != null) {
@@ -421,8 +438,8 @@ abstract class NotallyActivity(private val type: Type) : AppCompatActivity(), Vi
 
         menu.add(R.string.share, R.drawable.share) { share() }
         menu.add(R.string.labels, R.drawable.label) { label() }
-        menu.add(R.string.reminder, R.drawable.reminder) { openReminderDialog() }
-        menu.add(R.string.add_images, R.drawable.add_images) { checkNotificationPermission() }
+        menu.add(R.string.reminder, R.drawable.reminder) { checkRemindersNotificationPermission() }
+        menu.add(R.string.add_images, R.drawable.add_images) { checkImagesNotificationPermission() }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             menu.add(R.string.record_audio, R.drawable.record_audio) { checkAudioPermission() }
@@ -487,10 +504,11 @@ abstract class NotallyActivity(private val type: Type) : AppCompatActivity(), Vi
     companion object {
         private const val REQUEST_ADD_IMAGES = 30
         private const val REQUEST_VIEW_IMAGES = 31
-        private const val REQUEST_NOTIFICATION_PERMISSION = 32
+        private const val REQUEST_IMAGES_NOTIFICATION_PERMISSION = 32
         private const val REQUEST_SELECT_LABELS = 33
         private const val REQUEST_RECORD_AUDIO = 34
         private const val REQUEST_PLAY_AUDIO = 35
         private const val REQUEST_AUDIO_PERMISSION = 36
+        private const val REQUEST_REMINDERS_NOTIFICATION_PERMISSION = 37
     }
 }

@@ -152,7 +152,7 @@
     <string name="unknown_name">Unknown name</string>
     <string name="unknown_error">Unknown error</string>
     <string name="insert_an_sd_card_images">Insert an SD card to add images</string>
-    <string name="please_grant_notally_notification">Please grant Notally the permission to send notifications and schedule alarms. They are needed for reminders and long running operations such as backups.</string>
+    <string name="please_grant_notally_notification">Please grant Notally the permission to send notifications. Notally will use it for reminders and to show progress of operations like deleting images and importing backups.</string>
 
     <plurals name="cant_add_images">
         <item quantity="one">Can’t add %d image</item>

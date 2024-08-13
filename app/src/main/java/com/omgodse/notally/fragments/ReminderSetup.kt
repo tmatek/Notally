@@ -15,7 +15,7 @@ import androidx.fragment.app.activityViewModels
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.omgodse.notally.R
 import com.omgodse.notally.databinding.DialogReminderBinding
-import com.omgodse.notally.miscellaneous.AlarmReceiver
+import com.omgodse.notally.AlarmReceiver
 import com.omgodse.notally.room.AlarmDetails
 import com.omgodse.notally.viewmodels.NotallyModel
 import java.util.Calendar
