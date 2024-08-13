@@ -14,6 +14,7 @@ import android.view.View
 import android.view.View.OnClickListener
 import android.widget.LinearLayout
 import androidx.core.content.ContextCompat
+import androidx.core.content.res.ResourcesCompat
 import com.google.android.material.chip.ChipGroup
 import com.google.android.material.shape.MaterialShapeDrawable
 import com.google.android.material.shape.RelativeCornerSize
@@ -160,12 +161,23 @@ object Operations {
         return drawable
     }
 
-    fun bindReminder(parent: LinearLayout, reminder: Long?, textSize: String, color: Color, clickListener: OnClickListener?) {
+    fun bindReminder(
+        parent: LinearLayout,
+        reminder: Long?,
+        textSize: String,
+        color: Color,
+        clickListener: OnClickListener?
+    ) {
         parent.visibility = if (reminder != null) View.VISIBLE else View.GONE
         parent.removeAllViews()
 
         val inflater = LayoutInflater.from(parent.context)
-        val labelSize = TextSize.getDisplayBodySize(textSize)
+        var labelSize = TextSize.getDisplayBodySize(textSize)
+        if (clickListener == null) {
+            labelSize = TextSize.getDisplayReminderSize(
+                textSize
+            )
+        }
         val view = ReminderChipBinding.inflate(inflater, parent, true).root
 
         val shadedColor = extractColorShade(color, parent.context)
@@ -175,7 +187,8 @@ object Operations {
         val future = Calendar.getInstance()
         val now = Calendar.getInstance()
 
-        var dateFormat = DateUtils.FORMAT_SHOW_DATE or DateUtils.FORMAT_SHOW_TIME or DateUtils.FORMAT_ABBREV_MONTH
+        var dateFormat =
+            DateUtils.FORMAT_SHOW_DATE or DateUtils.FORMAT_SHOW_TIME or DateUtils.FORMAT_ABBREV_MONTH
 
         if (reminder != null) {
             // If reminder is not in next year, omit the year display.
@@ -196,6 +209,10 @@ object Operations {
             if (clickListener != null) {
                 view.setOnClickListener(clickListener)
                 view.isClickable = true
+            } else {
+                view.icon = ResourcesCompat.getDrawable(
+                    view.context.resources, R.drawable.alarm_16, view.context.theme
+                )
             }
         }
     }

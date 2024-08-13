@@ -24,7 +24,9 @@
             android:layout_height="wrap_content"
             android:focusableInTouchMode="true"
             android:orientation="vertical"
-            android:paddingBottom="16dp">
+            android:paddingBottom="16dp"
+            android:clipToPadding="false"
+            android:clipChildren="false">
 
             <com.omgodse.notally.image.AspectRatioRecyclerView
                 android:id="@+id/ImagePreview"
@@ -124,7 +126,7 @@
                 android:orientation="vertical"
                 android:paddingStart="24dp"
                 android:paddingEnd="24dp"
-                android:paddingBottom="16dp"
+                android:paddingTop="16dp"
                 android:visibility="gone"
                 android:clipToPadding="false"
                 android:clipChildren="false" />

@@ -122,6 +122,15 @@ object TextSize : ListInfo {
         }
     }
 
+    fun getDisplayReminderSize(textSize: String): Float {
+        return when (textSize) {
+            small -> 10f
+            medium -> 12f
+            large -> 13f
+            else -> throw IllegalArgumentException("Invalid : $textSize")
+        }
+    }
+
     fun getDisplayTitleSize(textSize: String): Float {
         return when (textSize) {
             small -> 14f
