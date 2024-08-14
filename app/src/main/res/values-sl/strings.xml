@@ -32,6 +32,7 @@
     <string name="time">Čas</string>
     <string name="please_grant_notally_reminders_notifications">Prosimo dovolite aplikaciji Notally da vam pošilja opomnike v obliki obvestil.</string>
     <string name="reminders_require_notification_permission">Uporaba opomnikov potrebuje dovoljenja za pošiljanje obvestil.</string>
+    <string name="please_grant_notally_alarms">Prosimo dovolite aplikaciji Notally da nastavlja opomnike.</string>
 
     <!-- Chooser dialog hints -->
     <string name="view_note">Ogled zapiska</string>

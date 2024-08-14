@@ -9,6 +9,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
+import android.provider.Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM
 import android.text.Editable
 import android.util.TypedValue
 import android.view.MenuItem
@@ -25,6 +26,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.omgodse.notally.AlarmService
 import com.omgodse.notally.R
 import com.omgodse.notally.databinding.ActivityNotallyBinding
 import com.omgodse.notally.databinding.DialogProgressBinding
@@ -151,8 +153,9 @@ abstract class NotallyActivity(private val type: Type) : AppCompatActivity(), Vi
         when (requestCode) {
             REQUEST_IMAGES_NOTIFICATION_PERMISSION -> selectImages()
             REQUEST_REMINDERS_NOTIFICATION_PERMISSION -> {
-                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) openReminderDialog()
-                else {
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    checkScheduleAlarmPermission()
+                } else {
                     Toast.makeText(
                         this,
                         getString(R.string.reminders_require_notification_permission),
@@ -252,6 +255,20 @@ abstract class NotallyActivity(private val type: Type) : AppCompatActivity(), Vi
         } else selectImages()
     }
 
+    private fun checkScheduleAlarmPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            if (!AlarmService.canScheduleAlarms(this)) {
+                MaterialAlertDialogBuilder(this)
+                    .setMessage(R.string.please_grant_notally_alarms)
+                    .setNegativeButton(R.string.cancel) { _, _ -> }
+                    .setPositiveButton(R.string.continue_) { _, _ ->
+                        startActivity(Intent(ACTION_REQUEST_SCHEDULE_EXACT_ALARM))
+                    }
+                    .show()
+            } else openReminderDialog()
+        } else openReminderDialog()
+    }
+
     private fun checkRemindersNotificationPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             val permission = Manifest.permission.POST_NOTIFICATIONS
@@ -271,8 +288,8 @@ abstract class NotallyActivity(private val type: Type) : AppCompatActivity(), Vi
                     arrayOf(permission),
                     REQUEST_REMINDERS_NOTIFICATION_PERMISSION
                 )
-            } else openReminderDialog()
-        } else openReminderDialog()
+            } else checkScheduleAlarmPermission()
+        } else checkScheduleAlarmPermission()
     }
 
     private fun recordAudio() {

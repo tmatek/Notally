@@ -15,7 +15,7 @@ import androidx.fragment.app.activityViewModels
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.omgodse.notally.R
 import com.omgodse.notally.databinding.DialogReminderBinding
-import com.omgodse.notally.AlarmReceiver
+import com.omgodse.notally.AlarmService
 import com.omgodse.notally.room.AlarmDetails
 import com.omgodse.notally.viewmodels.NotallyModel
 import java.util.Calendar
@@ -93,7 +93,7 @@ class ReminderSetupDialog : DialogFragment(), View.OnClickListener, DatePickerDi
             DialogInterface.BUTTON_POSITIVE -> {
                 // first cancel previous alarm
                 if (model.reminder.value != null) {
-                    AlarmReceiver.cancelAlarm(
+                    AlarmService.cancelAlarm(
                         this.requireContext(),
                         AlarmDetails(model.reminder.value!!, model.id)
                     )
@@ -102,7 +102,7 @@ class ReminderSetupDialog : DialogFragment(), View.OnClickListener, DatePickerDi
                 model.reminder.value = pickedDate.timeInMillis
 
                 // schedule new alarm
-                AlarmReceiver.scheduleAlarm(
+                AlarmService.scheduleAlarm(
                     this.requireContext(), AlarmDetails(pickedDate.timeInMillis, model.id)
                 )
 

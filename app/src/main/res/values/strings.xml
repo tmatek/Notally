@@ -32,8 +32,9 @@
     <string name="reminder">Reminder</string>
     <string name="manage_reminder">Manage reminder</string>
     <string name="time">Time</string>
-    <string name="please_grant_notally_reminders_notifications">Please grant Notally notification permissions to be able to send you scheduled reminders.</string>
+    <string name="please_grant_notally_reminders_notifications">Please grant Notally notification permissions to send you reminders.</string>
     <string name="reminders_require_notification_permission">Reminders require notification permissions.</string>
+    <string name="please_grant_notally_alarms">Please grant Notally permissions to schedule alarms which are required for reminders.</string>
 
     <!-- Chooser dialog hints -->
     <string name="view_note">View note</string>
