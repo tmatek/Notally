@@ -30,6 +30,8 @@
     <string name="reminder">Opomnik</string>
     <string name="manage_reminder">Nastavi opomnik</string>
     <string name="time">Čas</string>
+    <string name="please_grant_notally_reminders_notifications">Prosimo dovolite aplikaciji Notally da vam pošilja opomnike v obliki obvestil.</string>
+    <string name="reminders_require_notification_permission">Uporaba opomnikov potrebuje dovoljenja za pošiljanje obvestil.</string>
 
     <!-- Chooser dialog hints -->
     <string name="view_note">Ogled zapiska</string>
@@ -146,7 +148,7 @@
     <string name="unknown_name">Neznano ime</string>
     <string name="unknown_error">Neznana napaka</string>
     <string name="insert_an_sd_card_images">Za dodajanje slik vstavite kartico SD</string>
-    <string name="please_grant_notally_notification">Prosimo dovolite aplikaciji Notally da vam pošilja opomnike in vas obvešča o napredku operacij kot sta brisanje slik ter uvažanje varnostnih kopij.</string>
+    <string name="please_grant_notally_notification">Prosimo dovolite aplikaciji Notally da vas obvešča o napredku operacij kot sta brisanje slik in uvažanje varnostnih kopij.</string>
 
     <plurals name="cant_add_images">
         <item quantity="one">%d slika ni bila dodana.</item>

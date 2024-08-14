@@ -110,16 +110,19 @@ abstract class NotallyActivity(private val type: Type) : AppCompatActivity(), Vi
                         val uris = arrayOf(uri)
                         model.addImages(uris)
                     } else if (clipData != null) {
-                        val uris = Array(clipData.itemCount) { index -> clipData.getItemAt(index).uri }
+                        val uris =
+                            Array(clipData.itemCount) { index -> clipData.getItemAt(index).uri }
                         model.addImages(uris)
                     }
                 }
+
                 REQUEST_VIEW_IMAGES -> {
                     val list = data?.getParcelableArrayListExtra<Image>(ViewImage.DELETED_IMAGES)
                     if (!list.isNullOrEmpty()) {
                         model.deleteImages(list)
                     }
                 }
+
                 REQUEST_SELECT_LABELS -> {
                     val list = data?.getStringArrayListExtra(SelectLabels.SELECTED_LABELS)
                     if (list != null && list != model.labels) {
@@ -127,6 +130,7 @@ abstract class NotallyActivity(private val type: Type) : AppCompatActivity(), Vi
                         Operations.bindLabels(binding.LabelGroup, model.labels, model.textSize)
                     }
                 }
+
                 REQUEST_RECORD_AUDIO -> model.addAudio()
                 REQUEST_PLAY_AUDIO -> {
                     val audio = data?.getParcelableExtra<Audio>(PlayAudio.AUDIO)
@@ -138,11 +142,25 @@ abstract class NotallyActivity(private val type: Type) : AppCompatActivity(), Vi
         }
     }
 
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         when (requestCode) {
             REQUEST_IMAGES_NOTIFICATION_PERMISSION -> selectImages()
-            REQUEST_REMINDERS_NOTIFICATION_PERMISSION -> openReminderDialog()
+            REQUEST_REMINDERS_NOTIFICATION_PERMISSION -> {
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) openReminderDialog()
+                else {
+                    Toast.makeText(
+                        this,
+                        getString(R.string.reminders_require_notification_permission),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }
+
             REQUEST_AUDIO_PERMISSION -> {
                 if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     recordAudio()
@@ -153,7 +171,7 @@ abstract class NotallyActivity(private val type: Type) : AppCompatActivity(), Vi
 
     override fun onClick(view: View?) {
         if (view?.parent == binding.ReminderLayout) {
-            openReminderDialog()
+            checkRemindersNotificationPermission()
         }
     }
 
@@ -219,11 +237,17 @@ abstract class NotallyActivity(private val type: Type) : AppCompatActivity(), Vi
                         .setMessage(R.string.please_grant_notally_notification)
                         .setNegativeButton(R.string.cancel) { _, _ -> selectImages() }
                         .setPositiveButton(R.string.continue_) { _, _ ->
-                            requestPermissions(arrayOf(permission), REQUEST_IMAGES_NOTIFICATION_PERMISSION)
+                            requestPermissions(
+                                arrayOf(permission),
+                                REQUEST_IMAGES_NOTIFICATION_PERMISSION
+                            )
                         }
                         .setOnDismissListener { selectImages() }
                         .show()
-                } else requestPermissions(arrayOf(permission), REQUEST_IMAGES_NOTIFICATION_PERMISSION)
+                } else requestPermissions(
+                    arrayOf(permission),
+                    REQUEST_IMAGES_NOTIFICATION_PERMISSION
+                )
             } else selectImages()
         } else selectImages()
     }
@@ -234,13 +258,19 @@ abstract class NotallyActivity(private val type: Type) : AppCompatActivity(), Vi
             if (checkSelfPermission(permission) != PackageManager.PERMISSION_GRANTED) {
                 if (shouldShowRequestPermissionRationale(permission)) {
                     MaterialAlertDialogBuilder(this)
-                        .setMessage(R.string.please_grant_notally_notification)
+                        .setMessage(R.string.please_grant_notally_reminders_notifications)
                         .setNegativeButton(R.string.cancel) { _, _ -> }
                         .setPositiveButton(R.string.continue_) { _, _ ->
-                            requestPermissions(arrayOf(permission), REQUEST_REMINDERS_NOTIFICATION_PERMISSION)
+                            requestPermissions(
+                                arrayOf(permission),
+                                REQUEST_REMINDERS_NOTIFICATION_PERMISSION
+                            )
                         }
                         .show()
-                } else requestPermissions(arrayOf(permission), REQUEST_REMINDERS_NOTIFICATION_PERMISSION)
+                } else requestPermissions(
+                    arrayOf(permission),
+                    REQUEST_REMINDERS_NOTIFICATION_PERMISSION
+                )
             } else openReminderDialog()
         } else openReminderDialog()
     }
@@ -342,7 +372,8 @@ abstract class NotallyActivity(private val type: Type) : AppCompatActivity(), Vi
 
         binding.ImagePreview.setHasFixedSize(true)
         binding.ImagePreview.adapter = adapter
-        binding.ImagePreview.layoutManager = LinearLayoutManager(this, RecyclerView.HORIZONTAL, false)
+        binding.ImagePreview.layoutManager =
+            LinearLayoutManager(this, RecyclerView.HORIZONTAL, false)
         PagerSnapHelper().attachToRecyclerView(binding.ImagePreview)
 
         model.images.observe(this) { list ->
@@ -362,7 +393,8 @@ abstract class NotallyActivity(private val type: Type) : AppCompatActivity(), Vi
                 dialog.show()
                 dialogBinding.ProgressBar.max = progress.total
                 dialogBinding.ProgressBar.setProgressCompat(progress.current, true)
-                dialogBinding.Count.text = getString(R.string.count, progress.current, progress.total)
+                dialogBinding.Count.text =
+                    getString(R.string.count, progress.current, progress.total)
             } else dialog.dismiss()
         }
 
@@ -373,12 +405,14 @@ abstract class NotallyActivity(private val type: Type) : AppCompatActivity(), Vi
 
     private fun displayImageErrors(errors: List<ImageError>) {
         val recyclerView = RecyclerView(this)
-        recyclerView.layoutParams = LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT)
+        recyclerView.layoutParams =
+            LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT)
         recyclerView.adapter = ErrorAdapter(errors)
         recyclerView.layoutManager = LinearLayoutManager(this)
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            recyclerView.scrollIndicators = View.SCROLL_INDICATOR_TOP or View.SCROLL_INDICATOR_BOTTOM
+            recyclerView.scrollIndicators =
+                View.SCROLL_INDICATOR_TOP or View.SCROLL_INDICATOR_BOTTOM
         }
 
         val title = resources.getQuantityString(R.plurals.cant_add_images, errors.size, errors.size)
@@ -421,7 +455,13 @@ abstract class NotallyActivity(private val type: Type) : AppCompatActivity(), Vi
 
     private fun setupReminder() {
         model.reminder.observe(this) { reminder ->
-            Operations.bindReminder(binding.ReminderLayout, reminder, model.textSize, model.color, this)
+            Operations.bindReminder(
+                binding.ReminderLayout,
+                reminder,
+                model.textSize,
+                model.color,
+                this
+            )
         }
     }
 
@@ -450,10 +490,12 @@ abstract class NotallyActivity(private val type: Type) : AppCompatActivity(), Vi
                 menu.add(R.string.delete, R.drawable.delete) { delete() }
                 menu.add(R.string.archive, R.drawable.archive) { archive() }
             }
+
             Folder.DELETED -> {
                 menu.add(R.string.restore, R.drawable.restore) { restore() }
                 menu.add(R.string.delete_forever, R.drawable.delete) { deleteForever() }
             }
+
             Folder.ARCHIVED -> {
                 menu.add(R.string.delete, R.drawable.delete) { delete() }
                 menu.add(R.string.unarchive, R.drawable.unarchive) { restore() }
@@ -468,6 +510,7 @@ abstract class NotallyActivity(private val type: Type) : AppCompatActivity(), Vi
                 binding.AddItem.visibility = View.GONE
                 binding.RecyclerView.visibility = View.GONE
             }
+
             Type.LIST -> {
                 binding.EnterBody.visibility = View.GONE
             }
